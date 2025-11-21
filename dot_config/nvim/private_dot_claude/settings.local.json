@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/uddhav/Projects/openobserve/**)",
+      "WebSearch"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
