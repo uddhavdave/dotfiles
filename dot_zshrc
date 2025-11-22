@@ -8,7 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="gentoo" # set by `omz`
+ZSH_THEME="gozilla" # set by `omz`
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -112,22 +112,99 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle command-not-found
 
 antigen bundle rust
-antigen bundle cargo 
+antigen bundle cargo
 antigen bundle rustup
 
 antigen apply
 
-alias vi=lvim
-alias vim=lvim
 
 export NVM_DIR="$HOME/.nvm"
-export EDITOR='lvim'
+export EDITOR='nvim'
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source <(fzf --zsh)
 
+export O2_PATH="$HOME/Projects/openobserve"
+export O2_ENT_PATH="$HOME/Projects/o2-enterprise"
+
+# Function to handle enterprise cargo run with arguments
+function run_enterprise() {
+    if [ -f "${O2_ENT_PATH}/Cargo.toml.openobserve" ]; then
+      cp "${O2_ENT_PATH}/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
+      ZO_META_POSTGRES_DSN="postgres://postgres:password@localhost:5432/openobserve" cargo run --features enterprise -- -c "$O2_PATH/.env" "$@" 
+    else
+        echo "Error: Cargo.toml.openobserve not found in ${O2_ENT_PATH}"
+        return 1
+    fi
+}
+
+# Function to handle enterprise cargo run with arguments
+function run_cloud() {
+    if [ -f "${O2_ENT_PATH}/Cargo.toml.openobserve" ]; then
+      cp "${O2_ENT_PATH}/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
+      ZO_META_POSTGRES_DSN="postgres://postgres:password@localhost:5432/openobserve_cloud" cargo run --features cloud -- -c "$O2_PATH/.env.cloud" "$@" 
+    else
+        echo "Error: Cargo.toml.openobserve not found in ${O2_ENT_PATH}"
+        return 1
+    fi
+}
+
+
+# Replace the existing alias with the new function
+alias cre="run_enterprise"
+alias crcld="run_cloud"
+alias zj="zellij"
+alias poe="cd ~/Projects/o2-enterprise"
+alias mk="minikube kubectl --"
+alias k="kubectl"
 alias cdh="cd ~"
 alias tmux="tmux -u -f ~/.config/nvim/.tmux.conf"
-
-alias cchk="cargo check"
 alias cz="chezmoi"
+alias pod="cd ~/Projects/openobserve/data"
+alias pow="cd ~/Projects/openobserve/web"
+alias po="cd ~/Projects/openobserve"
+alias pif="cd ~/Projects/infra"
+alias pdf="cd ~/Projects/datafusion"
+alias proj="cd ~/Projects/"
+alias cchk="cargo check"
+alias crr="cargo run --release"
+alias cr="cargo run"
+alias vi=nvim
+alias vim=nvim
+alias wt="cd ~/projects/o2worktrees/"
+alias gprom="git pull -r origin main"
+
+# Add GOPATH to PATH
+export GOPATH="$HOME/go"
+export PATH="$GOPATH/bin:$PATH"
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Function to run ingestion benchmark with configurable connection parameters
+function ingest_data() {
+    # Execute the benchmark
+    pushd ~/tools/benchmark-o2
+    trap 'popd' INT  # Return to previous directory when Ctrl+C is pressed
+    
+    go run profile_index_stream.go "$@"
+    
+    popd
+}
+
+# Created by `pipx` on 2025-03-19 04:24:54
+export PATH="$PATH:/Users/uddhav/.local/bin"
+
+export VECTOR_CONFIG_TOML="$HOME/tools/vector/vector.toml"
+export VECTOR_DATA_DIR="$HOME/tools/vector/data/"
+
+# bun completions
+[ -s "/Users/uddhav/.bun/_bun" ] && source "/Users/uddhav/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Added by Antigravity
+export PATH="/Users/uddhav/.antigravity/antigravity/bin:$PATH"
+alias o2wt='/Users/uddhav/Projects/o2worktrees/o2-worktree-manager.sh'
