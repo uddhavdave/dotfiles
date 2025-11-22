@@ -102,7 +102,7 @@ source $ZSH/oh-my-zsh.sh
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
 
-source ~/antigen.zsh
+source /opt/homebrew/share/antigen/antigen.zsh
 
 antigen use oh-my-zsh
 
@@ -122,7 +122,6 @@ export NVM_DIR="$HOME/.nvm"
 export EDITOR='nvim'
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 source <(fzf --zsh)
 
 export O2_PATH="$HOME/Projects/openobserve"
@@ -208,3 +207,6 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Added by Antigravity
 export PATH="/Users/uddhav/.antigravity/antigravity/bin:$PATH"
 alias o2wt='/Users/uddhav/Projects/o2worktrees/o2-worktree-manager.sh'
+
+# Added by Antigravity
+export PATH="/Users/uddhav/.antigravity/antigravity/bin:$PATH"
