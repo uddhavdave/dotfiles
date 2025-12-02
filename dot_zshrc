@@ -70,7 +70,7 @@ ZSH_THEME="gozilla" # set by `omz`
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git z)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -112,16 +112,15 @@ antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle command-not-found
 
 antigen bundle rust
-antigen bundle cargo
-antigen bundle rustup
 
 antigen apply
 
 
 export NVM_DIR="$HOME/.nvm"
 export EDITOR='nvim'
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Load nvm from Homebrew location
+[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 source <(fzf --zsh)
 
 export O2_PATH="$HOME/Projects/openobserve"
@@ -129,24 +128,24 @@ export O2_ENT_PATH="$HOME/Projects/o2-enterprise"
 
 # Function to handle enterprise cargo run with arguments
 function run_enterprise() {
-    if [ -f "${O2_ENT_PATH}/Cargo.toml.openobserve" ]; then
-      cp "${O2_ENT_PATH}/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
-      ZO_META_POSTGRES_DSN="postgres://postgres:password@localhost:5432/openobserve" cargo run --features enterprise -- -c "$O2_PATH/.env" "$@" 
-    else
-        echo "Error: Cargo.toml.openobserve not found in ${O2_ENT_PATH}"
-        return 1
-    fi
+  if [ -f "${O2_ENT_PATH}/Cargo.toml.openobserve" ]; then
+    cp "${O2_ENT_PATH}/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
+    ZO_META_POSTGRES_DSN="postgres://postgres:password@localhost:5432/openobserve" cargo run --features enterprise -- -c "$O2_PATH/.env" "$@" 
+  else
+    echo "Error: Cargo.toml.openobserve not found in ${O2_ENT_PATH}"
+    return 1
+  fi
 }
 
 # Function to handle enterprise cargo run with arguments
 function run_cloud() {
-    if [ -f "${O2_ENT_PATH}/Cargo.toml.openobserve" ]; then
-      cp "${O2_ENT_PATH}/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
-      ZO_META_POSTGRES_DSN="postgres://postgres:password@localhost:5432/openobserve_cloud" cargo run --features cloud -- -c "$O2_PATH/.env.cloud" "$@" 
-    else
-        echo "Error: Cargo.toml.openobserve not found in ${O2_ENT_PATH}"
-        return 1
-    fi
+  if [ -f "${O2_ENT_PATH}/Cargo.toml.openobserve" ]; then
+    cp "${O2_ENT_PATH}/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
+    ZO_META_POSTGRES_DSN="postgres://postgres:password@localhost:5432/openobserve_cloud" cargo run --features cloud -- -c "$O2_PATH/.env.cloud" "$@" 
+  else
+    echo "Error: Cargo.toml.openobserve not found in ${O2_ENT_PATH}"
+    return 1
+  fi
 }
 
 
@@ -182,13 +181,11 @@ export LC_ALL=en_US.UTF-8
 
 # Function to run ingestion benchmark with configurable connection parameters
 function ingest_data() {
-    # Execute the benchmark
-    pushd ~/tools/benchmark-o2
-    trap 'popd' INT  # Return to previous directory when Ctrl+C is pressed
-    
-    go run profile_index_stream.go "$@"
-    
-    popd
+  # Execute the benchmark
+  pushd ~/projects/deployments/benchmark-o2
+  trap 'popd' INT  # Return to previous directory when Ctrl+C is pressed
+  go run profile_index_stream.go "$@"
+  popd
 }
 
 # Created by `pipx` on 2025-03-19 04:24:54
@@ -207,6 +204,5 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # Added by Antigravity
 export PATH="/Users/uddhav/.antigravity/antigravity/bin:$PATH"
 alias o2wt='/Users/uddhav/Projects/o2worktrees/o2-worktree-manager.sh'
+export CARGO_TARGET_DIR="$HOME/.cargo/shared-target"
 
-# Added by Antigravity
-export PATH="/Users/uddhav/.antigravity/antigravity/bin:$PATH"
