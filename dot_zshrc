@@ -123,27 +123,27 @@ export EDITOR='nvim'
 [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 source <(fzf --zsh)
 
-export O2_PATH="$HOME/Projects/openobserve"
-export O2_ENT_PATH="$HOME/Projects/o2-enterprise"
+export O2_PATH="../openobserve"
+export O2_ENT_PATH="../o2-enterprise"
 
 # Function to handle enterprise cargo run with arguments
 function run_enterprise() {
-  if [ -f "${O2_ENT_PATH}/Cargo.toml.openobserve" ]; then
-    cp "${O2_ENT_PATH}/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
-    ZO_META_POSTGRES_DSN="postgres://postgres:password@localhost:5432/openobserve" cargo run --features enterprise -- -c "$O2_PATH/.env" "$@" 
+  if [ -f "../o2-enterprise/Cargo.toml.openobserve" ]; then
+    cp "../o2-enterprise/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
+    cargo run --features enterprise -- -c ".env" "$@"
   else
-    echo "Error: Cargo.toml.openobserve not found in ${O2_ENT_PATH}"
+    echo "Error: Cargo.toml.openobserve not found in ../o2-enterprise"
     return 1
   fi
 }
 
-# Function to handle enterprise cargo run with arguments
+# Function to handle cloud cargo run with arguments
 function run_cloud() {
-  if [ -f "${O2_ENT_PATH}/Cargo.toml.openobserve" ]; then
-    cp "${O2_ENT_PATH}/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
-    ZO_META_POSTGRES_DSN="postgres://postgres:password@localhost:5432/openobserve_cloud" cargo run --features cloud -- -c "$O2_PATH/.env.cloud" "$@" 
+  if [ -f "../o2-enterprise/Cargo.toml.openobserve" ]; then
+    cp "../o2-enterprise/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
+    cargo run --features cloud -- -c ".env.cloud" "$@"
   else
-    echo "Error: Cargo.toml.openobserve not found in ${O2_ENT_PATH}"
+    echo "Error: Cargo.toml.openobserve not found in ../o2-enterprise"
     return 1
   fi
 }
