@@ -70,7 +70,7 @@ ZSH_THEME="gozilla" # set by `omz`
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git z)
+plugins=(git z argocd)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -130,7 +130,22 @@ export O2_ENT_PATH="../o2-enterprise"
 function run_enterprise() {
   if [ -f "../o2-enterprise/Cargo.toml.openobserve" ]; then
     cp "../o2-enterprise/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
+
+    # Start frontend in background
+    echo "Starting frontend..."
+    (cd web && [ ! -d "node_modules" ] && npm install; npm run dev) &
+    local FE_PID=$!
+
+    # Trap to kill frontend when function exits
+    trap "echo 'Stopping frontend...'; kill $FE_PID 2>/dev/null; wait $FE_PID 2>/dev/null" EXIT INT TERM
+
+    # Run backend in foreground
     cargo run --features enterprise -- -c ".env" "$@"
+
+    # Cleanup trap
+    trap - EXIT INT TERM
+    kill $FE_PID 2>/dev/null
+    wait $FE_PID 2>/dev/null
   else
     echo "Error: Cargo.toml.openobserve not found in ../o2-enterprise"
     return 1
@@ -141,7 +156,22 @@ function run_enterprise() {
 function run_cloud() {
   if [ -f "../o2-enterprise/Cargo.toml.openobserve" ]; then
     cp "../o2-enterprise/Cargo.toml.openobserve" "$(pwd)/Cargo.toml"
+
+    # Start frontend in background
+    echo "Starting frontend..."
+    (cd web && [ ! -d "node_modules" ] && npm install; npm run dev) &
+    local FE_PID=$!
+
+    # Trap to kill frontend when function exits
+    trap "echo 'Stopping frontend...'; kill $FE_PID 2>/dev/null; wait $FE_PID 2>/dev/null" EXIT INT TERM
+
+    # Run backend in foreground
     cargo run --features cloud -- -c ".env.cloud" "$@"
+
+    # Cleanup trap
+    trap - EXIT INT TERM
+    kill $FE_PID 2>/dev/null
+    wait $FE_PID 2>/dev/null
   else
     echo "Error: Cargo.toml.openobserve not found in ../o2-enterprise"
     return 1
@@ -172,6 +202,7 @@ alias vi=nvim
 alias vim=nvim
 alias wt="cd ~/projects/o2worktrees/"
 alias gprom="git pull -r origin main"
+alias o2o="~/playground/claude-agent-docker/orchestrator/o2-orchestrate"
 
 # Add GOPATH to PATH
 export GOPATH="$HOME/go"
@@ -186,6 +217,21 @@ function ingest_data() {
   trap 'popd' INT  # Return to previous directory when Ctrl+C is pressed
   go run profile_index_stream.go "$@"
   popd
+}
+
+# Function to list PRs that need your review in both repos
+function prr() {
+  echo "=== OpenObserve PRs to Review ==="
+  (cd ~/Projects/openobserve && GH_PAGER="" gh pr list --search "is:open review-requested:@me" --json number,title,url,author --template '{{range .}}#{{.number}} - {{.title}} (by @{{.author.login}})
+  {{.url}}
+
+{{end}}')
+  echo ""
+  echo "=== O2 Enterprise PRs to Review ==="
+  (cd ~/Projects/o2-enterprise && GH_PAGER="" gh pr list --search "is:open review-requested:@me" --json number,title,url,author --template '{{range .}}#{{.number}} - {{.title}} (by @{{.author.login}})
+  {{.url}}
+
+{{end}}')
 }
 
 # Created by `pipx` on 2025-03-19 04:24:54
@@ -206,3 +252,11 @@ export PATH="/Users/uddhav/.antigravity/antigravity/bin:$PATH"
 alias o2wt='/Users/uddhav/Projects/o2worktrees/o2-worktree-manager.sh'
 export CARGO_TARGET_DIR="$HOME/.cargo/shared-target"
 
+export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+
+# Claude Agent Docker alias
+alias claude-agent='~/playground/claude-agent-docker/start-claude-agent.sh'
+
+alias omni-compose="docker compose -f ~/projects/omni/docker/docker-compose.yml --env-file ~/projects/omni/.env"
+
+alias claude-mem='bun "/Users/uddhav/.claude/plugins/marketplaces/thedotmack/plugin/scripts/worker-service.cjs"'

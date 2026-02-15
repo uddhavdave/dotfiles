@@ -7,6 +7,12 @@ return {
   },
   config = true,
   keys = {
-    { "<leader>gg", "<cmd>Neogit<cr>", desc = "Open Neogit" },
+    {
+      "<leader>gg",
+      function()
+        require("neogit").open({ cwd = vim.fn.expand("%:p:h") })
+      end,
+      desc = "Open Neogit",
+    },
   },
 }

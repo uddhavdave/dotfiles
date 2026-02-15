@@ -7,6 +7,16 @@
 // custom settings, run the `open default settings` command
 // from the command palette or from `Zed` application menu.
 {
+  "telemetry": {
+    "diagnostics": true,
+    "metrics": true
+  },
+  "icon_theme": {
+    "mode": "system",
+    "light": "Zed (Default)",
+    "dark": "Zed (Default)"
+  },
+  "base_keymap": "VSCode",
   "buffer_font_family": "Menlo",
   "agent": {
     "play_sound_when_agent_done": true,
@@ -22,10 +32,10 @@
   "buffer_font_size": 16,
   "theme": {
     "mode": "system",
-    "light": "Gruvbox Dark Hard",
-    "dark": "Gruvbox Dark Hard"
+    "light": "Gruvbox Light",
+    "dark": "Gruvbox Dark"
   },
-  "vim_mode": true,
+  "vim_mode": false,
   "vim": {
     "use_system_clipboard": "always",
     "use_multiline_find": true

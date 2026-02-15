@@ -10,7 +10,9 @@ return {
     config = function()
       vim.g.rustaceanvim = {
         dap = {
+          adapter = "codelldb",
           autoload_configurations = true,
+          load_rust_types = true,
         },
         server = {
           settings = {
@@ -18,7 +20,7 @@ return {
               cargo = {
                 allFeatures = true,
               },
-              checkOnSave = {
+              check = {
                 command = "clippy",
               },
               completion = {

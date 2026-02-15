@@ -1,31 +1,30 @@
 {
-  "$schema" : "https:\/\/schema.linearmouse.app\/0.10.0",
+  "$schema" : "https:\/\/schema.linearmouse.app\/0.10.2",
   "schemes" : [
     {
-      "scrolling" : {
-        "acceleration" : {
-          "vertical" : 0.3,
-          "horizontal" : 1
-        },
-        "speed" : {
-          "vertical" : 55.98
-        },
-        "reverse" : {
-          "vertical" : true
-        }
-      },
       "if" : {
         "device" : {
-          "productID" : "0xb023",
-          "vendorID" : "0x46d",
-          "serialNumber" : "C4FED18D091C88F4",
           "category" : "mouse",
-          "productName" : "MX Master 3"
+          "productID" : "0xb023",
+          "productName" : "MX Master 3",
+          "serialNumber" : "C4FED18D091C88F4",
+          "vendorID" : "0x46d"
         }
       },
       "pointer" : {
         "acceleration" : 0,
-        "speed" : 0.9484
+        "speed" : 0.9038
+      },
+      "scrolling" : {
+        "acceleration" : {
+          "horizontal" : 0.62,
+          "vertical" : 0.3
+        },
+        "reverse" : true,
+        "speed" : {
+          "horizontal" : 10.29,
+          "vertical" : 26.1
+        }
       }
     }
   ]
