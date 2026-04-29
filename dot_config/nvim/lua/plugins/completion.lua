@@ -9,4 +9,7 @@ return {
       },
     },
   },
+  { "zbirenbaum/copilot.lua", enabled = false },
+  { "blink-copilot", enabled = false },
+  { "MeanderingProgrammer/render-markdown.nvim", enabled = false },
 }
